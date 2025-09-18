@@ -1,0 +1,138 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1" />
+  <title>Your Name — JavaScript • Portfolio</title>
+  <meta name="description" content="JavaScript-focused page of Your Name's portfolio." />
+  <style>
+    :root{--accent:#2563eb;--bg:#fff;--muted:#6b7280;--maxw:1000px}
+    body{margin:0;font-family:Inter,system-ui;background:#f7f7f9;color:#0f172a}
+    .wrap{max-width:var(--maxw);margin:0 auto;padding:28px}
+    header{display:flex;justify-content:space-between;align-items:center}
+    nav a{margin-left:12px;color:var(--muted);text-decoration:none}
+    .grid{display:grid;grid-template-columns:1fr 320px;gap:16px;margin-top:20px}
+    .card{background:#fff;padding:16px;border-radius:12px;box-shadow:0 8px 24px rgba(2,6,23,0.04)}
+    .demo-area{display:flex;flex-direction:column;gap:12px}
+    .btn{background:var(--accent);color:#fff;padding:8px 12px;border-radius:8px;border:none;cursor:pointer}
+    pre{background:#0f172a;color:#fff;padding:12px;border-radius:8px;overflow:auto}
+    @media(max-width:900px){.grid{grid-template-columns:1fr}}
+  </style>
+</head>
+<body>
+  <div class="wrap">
+    <header>
+      <div style="font-weight:700">Your Name</div>
+      <nav>
+        <a href="index.html">HTML</a>
+        <a href="js.html">JavaScript</a>
+        <a href="css.html">CSS</a>
+      </nav>
+    </header>
+
+    <main>
+      <h1 style="margin-top:20px">JavaScript — Interactive demos</h1>
+      <p style="color:var(--muted)">Small scripts to showcase interactivity and how you approach JS problems.</p>
+
+      <section class="grid">
+        <div>
+          <div class="card">
+            <h2>1) Theme toggle (localStorage)</h2>
+            <p style="color:var(--muted)">Toggle site theme and persist choice in localStorage.</p>
+            <div class="demo-area">
+              <button id="toggleTheme" class="btn">Toggle theme</button>
+              <p id="themeStatus" style="color:var(--muted)"></p>
+            </div>
+          </div>
+
+          <div class="card" style="margin-top:16px">
+            <h2>2) Small project: To-do (in-memory)</h2>
+            <p style="color:var(--muted)">Add items to a simple JS to-do list (no backend).</p>
+            <form id="todoForm">
+              <input id="todoInput" placeholder="Add todo" style="padding:8px;border-radius:8px;border:1px solid #e6e6e6;width:70%" />
+              <button class="btn" style="padding:8px 10px;margin-left:8px">Add</button>
+            </form>
+            <ul id="todoList" style="margin-top:12px;padding-left:18px"></ul>
+          </div>
+        </div>
+
+        <aside>
+          <div class="card">
+            <h3>JS Projects</h3>
+            <ul style="color:var(--muted)">
+              <li>Interactive map demo</li>
+              <li>Fetch + render API data</li>
+              <li>Animated UI components</li>
+            </ul>
+          </div>
+
+          <div class="card" style="margin-top:16px">
+            <h3>Code sample</h3>
+            <pre><code>function add(a,b){ return a + b }</code></pre>
+          </div>
+        </aside>
+      </section>
+
+      <footer style="margin-top:20px;color:var(--muted)">© <span id="year"></span> Your Name</footer>
+    </main>
+  </div>
+
+<script>
+  // year
+  document.getElementById('year').textContent=new Date().getFullYear();
+
+  // Theme toggle demo (simple)
+  const root = document.documentElement;
+  const toggle = document.getElementById('toggleTheme');
+  const status = document.getElementById('themeStatus');
+
+  function applyTheme(t){
+    if(t === 'dark'){ root.style.background='#0b1220'; root.style.color='#e6eefc'; status.textContent='Dark theme active' }
+    else { root.style.background=''; root.style.color=''; status.textContent='Light theme active' }
+  }
+
+  (function initTheme(){
+    const saved = localStorage.getItem('site-theme') || 'light';
+    applyTheme(saved);
+  })();
+
+  toggle.addEventListener('click', ()=>{
+    const current = localStorage.getItem('site-theme') || 'light';
+    const next = current === 'light' ? 'dark' : 'light';
+    localStorage.setItem('site-theme', next);
+    applyTheme(next);
+  });
+
+  // Tiny todo demo
+  const form = document.getElementById('todoForm');
+  const input = document.getElementById('todoInput');
+  const list = document.getElementById('todoList');
+  let todos = [];
+
+  form.addEventListener('submit', (e)=>{
+    e.preventDefault();
+    const val = input.value.trim();
+    if(!val) return;
+    todos.push(val);
+    input.value='';
+    renderTodos();
+  });
+
+  function renderTodos(){
+    list.innerHTML = '';
+    todos.forEach((t, i) => {
+      const li = document.createElement('li');
+      li.textContent = t + ' ';
+      const btn = document.createElement('button');
+      btn.textContent = 'Remove';
+      btn.style.marginLeft='8px';
+      btn.addEventListener('click', ()=> {
+        todos.splice(i,1); renderTodos();
+      });
+      li.appendChild(btn);
+      list.appendChild(li);
+    });
+  }
+</script>
+</body>
+</html>
